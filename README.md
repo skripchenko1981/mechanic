@@ -6,7 +6,7 @@ Full-stack основа цифрової платформи крафтової �
 
 1. Створіть `.env` на основі `.env.example` і замініть усі production-секрети.
 2. Запустіть `docker compose up --build`.
-3. Відкрийте `http://localhost:8080`, API-документацію — `http://localhost:8080/docs`.
+3. Відкрийте `http://localhost:8081`, API-документацію — `http://localhost:8081/docs`.
 
 Перед першим production-деплоєм обов'язково: налаштуйте TLS у Cloudflare/Nginx, S3 для медіа, резервні копії БД та реальний Telegram webhook.
 
