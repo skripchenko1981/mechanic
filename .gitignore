@@ -1,0 +1,12 @@
+.env
+.env.*
+!.env.example
+node_modules/
+.next/
+dist/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+uploads/
+postgres-data/
+redis-data/
