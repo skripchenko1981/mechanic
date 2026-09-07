@@ -51,6 +51,7 @@ async def lifespan(app:FastAPI):
 app=FastAPI(title="ПИВО МЕХАНІК API",version="0.1.0",lifespan=lifespan,openapi_url="/openapi.json",docs_url="/docs")
 app.add_middleware(CORSMiddleware,allow_origins=[x.strip() for x in settings.allowed_origins.split(",")],allow_credentials=True,allow_methods=["GET","POST","PATCH"],allow_headers=["*"])
 @app.get("/health")
+@app.get("/api/health")
 def health(): return {"status":"ok"}
 @app.get("/api/products",response_model=list[ProductOut])
 def products(db:Session=Depends(get_db)): return db.scalars(select(Product).order_by(Product.name)).all()
