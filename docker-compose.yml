@@ -38,7 +38,9 @@ services:
     restart: unless-stopped
   nginx:
     image: nginx:1.27-alpine
-    ports: ["80:80"]
+    # Host port 80 is commonly owned by the server-wide Nginx/Cloudflare proxy.
+    # Expose the application gateway on 8080 and proxy a domain to it there.
+    ports: ["8080:80"]
     depends_on: [frontend, backend]
     volumes: [./infra/nginx.conf:/etc/nginx/conf.d/default.conf:ro]
     restart: unless-stopped
