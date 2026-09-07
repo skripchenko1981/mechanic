@@ -40,9 +40,27 @@ def get_db():
     try: yield db
     finally: db.close()
 def seed(db:Session):
-    if db.scalar(select(Product.id).limit(1)): return
-    ipa=Category(slug="ipa",name="IPA"); lager=Category(slug="lager",name="Lager"); db.add_all([ipa,lager]); db.flush()
-    db.add_all([Product(slug="tropical-ipa",name="Tropical IPA",style="India Pale Ale",description="Манго, грейпфрут та сосна.",abv=6.5,ibu=48,price=99,wholesale_price=68,stock_quantity=240,image_url="",category_id=ipa.id),Product(slug="golden-lager",name="Golden Lager",style="Helles Lager",description="Чистий солодовий профіль.",abv=4.8,ibu=18,price=79,wholesale_price=54,stock_quantity=320,image_url="",category_id=lager.id)]); db.commit()
+    categories = {item.slug: item for item in db.scalars(select(Category)).all()}
+    for slug, name in [("ipa", "IPA"), ("lager", "Lager"), ("porter", "Porter"), ("stout", "Stout"), ("wheat", "Wheat")]:
+        if slug not in categories:
+            categories[slug] = Category(slug=slug, name=name); db.add(categories[slug])
+    db.flush()
+    items = [
+      ("vtulka-american-ipa", "Vtulka", "American IPA", "IPA в американському стилі на хмелях Citra, Ahtanum, Simcoe та Chinook. Цитрусово-тропічний, збалансований і сухий IPA з характером.", 5.7, 45, 80, 56, 220, "ipa", "https://mbrew.com.ua/wp-content/uploads/2020/02/1-vtulka-600x450.jpg"),
+      ("friday-out-porter", "Friday Out", "Porter", "Портер на американських хмелях Warrior та Cascade: смажена кава, гіркий шоколад, печиво та сухий фініш.", 10.5, 60, 77, 54, 160, "porter", "https://mbrew.com.ua/wp-content/uploads/2020/02/5-friday-out-600x450.jpg"),
+      ("crash-of-imperial-stout", "Crash OF", "Imperial Stout", "Темний міцний імператорський стаут із кавово-шоколадним характером та паленим і карамельним солодом.", 10.0, 55, 85, 60, 120, "stout", "https://mbrew.com.ua/wp-content/uploads/2025/02/5-crashof-300x300.jpg"),
+      ("see-the-sea-lager", "See the sea", "Lager", "Класичний світлий лагер із чистим нейтральним профілем і м’якою гіркотою.", 4.8, 18, 54, 38, 300, "lager", ""),
+      ("a-little-bit-weet", "A little bit weet", "Witbier", "Освіжаючий бельгійський пшеничний ель із цедрою апельсина, коріандром, пшеничними та вівсяними пластівцями.", 5.0, 14, 69, 48, 180, "wheat", ""),
+    ]
+    existing = {item.slug: item for item in db.scalars(select(Product)).all()}
+    for slug, name, style, description, abv, ibu, price, wholesale_price, stock, category, image_url in items:
+        data = dict(name=name, style=style, description=description, abv=abv, ibu=ibu, price=price, wholesale_price=wholesale_price, stock_quantity=stock, image_url=image_url, category_id=categories[category].id)
+        if slug in existing:
+            for key, value in data.items(): setattr(existing[slug], key, value)
+        else: db.add(Product(slug=slug, **data))
+    for old_slug in ("tropical-ipa", "golden-lager"):
+        if old := existing.get(old_slug): db.delete(old)
+    db.commit()
 @asynccontextmanager
 async def lifespan(app:FastAPI):
     Base.metadata.create_all(engine)
