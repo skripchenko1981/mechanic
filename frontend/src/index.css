@@ -1,0 +1,83 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+@import 'tailwindcss';
+
+/*
+  Design tokens — a functional wholesale/logistics ops console, not a
+  generic SaaS dashboard. Off-white paper background, deep ink text
+  (never pure black), a steel-blue primary for actions and a warm amber
+  reserved specifically for "needs attention" (new orders). Manrope
+  carries both display and body text; tabular figures keep order numbers
+  and money columns aligned.
+*/
+@theme {
+  --font-sans: 'Manrope', ui-sans-serif, system-ui, sans-serif;
+
+  --color-paper: #f6f7f5;
+  --color-surface: #ffffff;
+  --color-ink: #1c2230;
+  --color-ink-soft: #4a5265;
+  --color-ink-faint: #8992a3;
+  --color-line: #e4e6e5;
+  --color-line-strong: #d3d6d4;
+
+  --color-action: #2a5a8c;
+  --color-action-hover: #1f4670;
+  --color-action-soft: #e7eef5;
+
+  --color-attention: #b8791f;
+  --color-attention-soft: #faf1e1;
+  --color-attention-strong: #8f5c14;
+
+  --color-info: #3763c9;
+  --color-info-soft: #e9edfa;
+
+  --color-progress: #7a4fc4;
+  --color-progress-soft: #f0eaf9;
+
+  --color-transit: #1c8a83;
+  --color-transit-soft: #e3f3f1;
+
+  --color-success: #2f7d4f;
+  --color-success-soft: #e7f4ec;
+
+  --color-danger: #b0402f;
+  --color-danger-soft: #f8e9e6;
+}
+
+@layer base {
+  html {
+    font-feature-settings: 'tnum' 1, 'cv11' 1;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+  }
+
+  ::selection {
+    background-color: var(--color-action-soft);
+    color: var(--color-action-hover);
+  }
+
+  *:focus-visible {
+    outline: 2px solid var(--color-action);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+@layer utilities {
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

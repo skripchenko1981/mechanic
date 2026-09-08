@@ -1,11 +1,10 @@
 name: pivo-mehanik
 services:
   frontend:
-    build: ./frontend
-    environment:
-      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost/api}
-      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost}
-      BACKEND_API_URL: http://backend:8000/api
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: /api
     restart: unless-stopped
   backend:
     build: ./backend
